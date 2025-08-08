@@ -1,0 +1,319 @@
+{% extends 'invapp/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    
+    <h2 class="text-center mb-4">{% if sale %}Update Sale{% else %}New Sale{% endif %}</h2>
+    <form method="POST" 
+    action="{% if sale %}{% url 'update_sale' sale.invno %}{% else %}{% url 'save_sale' %}{% endif %}">
+        {% csrf_token %}
+        <input type="hidden" name="items_json" id="itemsJson" value="{{ sale_items_json }}">
+
+        <!-- Invoice No & Date -->
+        <div class="row">
+            <div class="col-md-6">
+                <label for="invno" class="form-label">Invoice No:</label>
+                <input type="number" id="invno" name="invno" class="form-control"
+                       value="{{ sale.invno|default:next_invno }}" 
+                       {% if sale %}readonly{% endif %} required>
+            </div>
+            <div class="col-md-6">
+                <label for="invdate" class="form-label">Invoice Date:</label>
+                <input type="date" class="form-control" name="invdate" id="invdate" 
+                    value="{{ sale.invdate|date:'Y-m-d'|default:today_date }}" required>
+            </div>
+        </div>
+
+        <!-- Party Details -->
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                    <label for="partyname" class="form-label me-2">Customer Name:</label>
+                    <select id="partyname" name="partyname" class="form-control w-50" required onchange="fillPartyDetails()">
+                        <option value="">Select Customer</option>
+                        {% for party in parties %}
+                            <option value="{{ party.partyname|default_if_none:''|escape }}"
+                                    data-add1="{{ party.add1|default_if_none:'' }}"
+                                    data-add2="{{ party.add2|default_if_none:'' }}"
+                                    data-city="{{ party.city|default_if_none:'' }}"
+                                    data-mobileno="{{ party.mobileno|default_if_none:'' }}"
+                                    data-emailid="{{ party.emailid|default_if_none:'' }}"
+                                    data-balance="{{ party.total_balance|default:0 }}"
+                                    {% if sale and sale.partyname == party.partyname %}selected{% endif %}
+                                    title="Balance: {{ party.total_balance }}">
+                                {{ party.partyname }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    
+                    <!-- Total Balance Label -->
+                    <label class="form-label ms-3">Total Balance:</label>
+                    <span id="partyBalance" class="fw-bold text-primary ms-2">₹0.00</span>
+                </div>
+            
+                <label class="form-label">Address 1:</label>
+                <input type="text" id="add1" name="add1" class="form-control" value="{{ party_details.add1|default:'' }}" readonly>
+            
+                <label class="form-label">Address 2:</label>
+                <input type="text" id="add2" name="add2" class="form-control" value="{{ party_details.add2|default:'' }}" readonly>
+            </div>
+            
+            <div class="col-md-6">
+                <label class="form-label">City:</label>
+                <input type="text" id="city" name="city" class="form-control" value="{{ party_details.city|default:'' }}" readonly>
+                <label class="form-label">Mobile:</label>
+                <input type="text" id="mobileno" name="mobileno" class="form-control" value="{{ party_details.mobileno|default:'' }}" readonly>
+                <label class="form-label">Email:</label>
+                <input type="email" id="emailid" name="emailid" class="form-control" value="{{ party_details.emailid|default:'' }}" readonly>
+            </div>
+        </div>
+
+        <!-- Item Selection -->
+        <h3 class="mt-4">Add Items</h3>
+        <div class="row align-items-end mb-3">
+            <div class="col-md-4">
+                <label class="form-label" for="itemname">Item Name:</label>
+                <select id="itemname" class="form-control">
+                    <option value="">Select Item</option>
+                    {% for item in items %}
+                        <option value="{{ item.itemname }}" data-rate="{{ item.itemrate }}">
+                            {{ item.itemname }} (₹{{ item.itemrate }} )
+                        </option>
+                    {% empty %}
+                        <option value="">No Items Available</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label" for="itemrate">Rate:</label>
+                <input type="number" id="itemrate" class="form-control">
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label" for="itemqty">Qty:</label>
+                <input type="number" id="itemqty" class="form-control">
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label" for="itemamt">Amount:</label>
+                <input type="number" id="itemamt" class="form-control" readonly>
+            </div>
+
+            <div class="col-md-2">
+                <button type="button" class="btn btn-success w-100 mt-4" id="addItemBtn">Add Item</button>
+            </div>
+        </div>
+
+        <!-- Added Items Table -->
+        <h3 class="mt-4">Added Items</h3>
+        <table class="table table-bordered mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Item Name</th>
+                    <th>Item Rate</th>
+                    <th>Item Qty</th>
+                    <th>Item Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="addedItemsTableBody"></tbody>
+        </table>
+
+        <!-- Summary -->
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="d-flex align-items-center mb-2">
+                    <label for="remark" class="form-label me-2 mb-0">Remark:</label>
+                    <input type="text" id="remark" name="remark" class="form-control">
+                </div>
+                <div class="d-flex align-items-center">
+                    <label for="amtinwords" class="form-label me-2 mb-0">Amt In Words:</label>
+                    <input type="text" id="amtinwords" name="amtinwords" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="d-flex align-items-center justify-content-end mb-2">
+                    <label for="amount" class="form-label me-2 mb-0">Total Amount:</label>
+                    <input type="number" id="amount" name="amount" class="form-control text-end w-50" readonly value="0">
+                </div>
+                <div class="d-flex align-items-center justify-content-end mb-2">
+                    <label for="adjustment" class="form-label me-2 mb-0">Adjustment:</label>
+                    <input type="number" id="adjustment" name="adjustment" class="form-control text-end w-50" value="0">
+                </div>
+                <div class="d-flex align-items-center justify-content-end">
+                    <label for="netamt" class="form-label me-2 mb-0">Net Amount:</label>
+                    <input type="number" id="netamt" name="netamt" class="form-control text-end w-50" readonly value="0">
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<!-- Include Same JS as purchase.html -->
+<script>
+    let itemsArray = JSON.parse(document.getElementById('itemsJson').value || '[]');
+    let editingIndex = null;
+
+    function fillPartyDetails() {
+        const partySelect = document.getElementById("partyname");
+        if (!partySelect.value) return;
+
+        const selectedOption = partySelect.options[partySelect.selectedIndex];
+        document.getElementById("add1").value = selectedOption.dataset.add1 || "";
+        document.getElementById("add2").value = selectedOption.dataset.add2 || "";
+        document.getElementById("city").value = selectedOption.dataset.city || "";
+        document.getElementById("mobileno").value = selectedOption.dataset.mobileno || "";
+        document.getElementById("emailid").value = selectedOption.dataset.emailid || "";
+
+        let balance = parseFloat(selectedOption.dataset.balance);
+        if (isNaN(balance)) balance = 0;
+        document.getElementById("partyBalance").textContent = `₹${balance.toFixed(2)}`;
+    }
+
+    document.getElementById('itemname').addEventListener('change', function() {
+        const selectedItem = this.options[this.selectedIndex];
+        document.getElementById('itemrate').value = selectedItem.dataset.rate || 0;
+        calculateAmount();
+    });
+
+    function calculateAmount() {
+        const rate = parseFloat(document.getElementById('itemrate').value) || 0;
+        const qty = parseFloat(document.getElementById('itemqty').value) || 0;
+        document.getElementById('itemamt').value = (rate * qty).toFixed(2);
+    }
+
+    document.getElementById('addItemBtn').addEventListener('click', function() {
+        const itemName = document.getElementById('itemname').value;
+        const itemRate = parseFloat(document.getElementById('itemrate').value);
+        const itemQty = parseFloat(document.getElementById('itemqty').value);
+        const itemAmt = parseFloat(document.getElementById('itemamt').value);
+
+        if (!itemName || itemQty <= 0 || isNaN(itemRate)) {
+            alert("Please select valid item and quantity!");
+            return;
+        }
+
+        if (editingIndex !== null) {
+            itemsArray[editingIndex] = { name: itemName, rate: itemRate, qty: itemQty, amt: itemAmt };
+            editingIndex = null;
+            this.textContent = 'Add Item';
+            this.classList.remove('btn-primary');
+            this.classList.add('btn-success');
+            document.getElementById('itemrate').readOnly = true;
+        } else {
+            itemsArray.push({ name: itemName, rate: itemRate, qty: itemQty, amt: itemAmt });
+        }
+
+        updateUI();
+        resetItemFields();
+    });
+
+    function updateUI() {
+        const tbody = document.getElementById('addedItemsTableBody');
+        tbody.innerHTML = '';
+        
+        itemsArray.forEach((item, index) => {
+            const row = `<tr>
+                <td>${item.name}</td>
+                <td>${item.rate.toFixed(2)}</td>
+                <td>${item.qty}</td>
+                <td>${item.amt.toFixed(2)}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="editItem(${index})">Update</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteItem(${index})">Remove</button>
+                </td>
+            </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+        
+        updateTotalAmount();
+        updateHiddenInput();
+    }
+
+    function editItem(index) {
+        const item = itemsArray[index];
+        const itemSelect = document.getElementById('itemname');
+        itemSelect.value = item.name;
+        itemSelect.dispatchEvent(new Event('change'));
+        document.getElementById('itemrate').value = item.rate;
+        document.getElementById('itemrate').readOnly = false;
+        document.getElementById('itemqty').value = item.qty;
+        calculateAmount();
+        editingIndex = index;
+        const addButton = document.getElementById('addItemBtn');
+        addButton.textContent = 'Update Item';
+        addButton.classList.remove('btn-success');
+        addButton.classList.add('btn-primary');
+    }
+
+    function deleteItem(index) {
+        itemsArray.splice(index, 1);
+        updateUI();
+    }
+
+    function resetItemFields() {
+        document.getElementById('itemname').selectedIndex = 0;
+        document.getElementById('itemrate').value = '';
+        document.getElementById('itemqty').value = '';
+        document.getElementById('itemamt').value = '';
+        editingIndex = null;
+        const addButton = document.getElementById('addItemBtn');
+        addButton.textContent = 'Add Item';
+        addButton.classList.remove('btn-primary');
+        addButton.classList.add('btn-success');
+        document.getElementById('itemrate').readOnly = true;
+    }
+
+    function updateTotalAmount() {
+        const total = itemsArray.reduce((sum, item) => sum + item.amt, 0);
+        document.getElementById('amount').value = total.toFixed(2);
+        updateNetAmount();
+    }
+
+    function updateNetAmount() {
+        let total = parseFloat(document.getElementById("amount").value) || 0;
+        let adjustment = parseFloat(document.getElementById("adjustment").value) || 0;
+        let net = total - adjustment;
+        document.getElementById("netamt").value = net.toFixed(2);
+        updateAmtInWords();
+    }
+
+    document.getElementById("adjustment").addEventListener("input", updateNetAmount);
+
+    function updateAmtInWords() {
+        const netAmt = parseFloat(document.getElementById("netamt").value) || 0;
+        fetch(`/num-to-words/?num=${netAmt}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("amtinwords").value = data.words;
+            })
+            .catch(error => {
+                console.error("Error converting to words:", error);
+                document.getElementById("amtinwords").value = "";
+            });
+    }
+
+    function updateHiddenInput() {
+        document.getElementById('itemsJson').value = JSON.stringify(itemsArray);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('partyname').value) {
+            fillPartyDetails();
+        }
+        updateUI();
+        document.getElementById('itemrate').addEventListener('input', calculateAmount);
+        document.getElementById('itemqty').addEventListener('input', calculateAmount);
+    });
+</script>
+
+{% endblock %}

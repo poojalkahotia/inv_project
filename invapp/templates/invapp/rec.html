@@ -1,0 +1,97 @@
+{% extends 'invapp/base.html' %}
+
+{% block title %}Receipt Entry{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-center text-primary mb-4">Receipt Entry Form</h2>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Entry No -->
+                        <div class="mb-3">
+                            <label for="entryno" class="form-label">Entry No:</label>
+                            <input type="number" id="entryno" name="entryno" class="form-control"
+                                   value="{% if receipt %}{{ receipt.entryno }}{% else %}{{ next_entryno }}{% endif %}" 
+                                   readonly required>
+                        </div>
+
+                        <!-- Entry Date -->
+                        <div class="mb-3">
+                            <label for="entrydate" class="form-label">Entry Date:</label>
+                            <input type="date" id="entrydate" name="entrydate" class="form-control"
+                                   value="{% if receipt and receipt.entrydate %}{{ receipt.entrydate|date:'Y-m-d' }}{% else %}{{ today_date }}{% endif %}" 
+                                   required>
+                        </div>
+
+                        <!-- Party Name with Total Balance -->
+                        <div class="mb-3">
+                            <label for="partyname" class="form-label">Party Name:</label>
+                            <div class="d-flex align-items-center">
+                                <select id="partyname" name="partyname" class="form-control w-50" required onchange="updatePartyBalance()">
+                                    <option value="">-- Select Party --</option>
+                                    {% for party in parties %}
+                                        <option value="{{ party.partyname }}" 
+                                                data-balance="{{ party.total_balance|default:0 }}"
+                                                {% if receipt and receipt.partyname|lower == party.partyname|lower %}selected{% endif %}>
+                                            {{ party.partyname }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                <label class="form-label ms-3 mb-0">Total Balance:</label>
+                                <span id="partyBalance" class="ms-2 fw-bold text-primary">₹0.00</span>
+                            </div>
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount:</label>
+                            <input type="number" id="amount" name="amount" class="form-control"
+                                   value="{{ receipt.amount|default_if_none:0 }}" required>
+                        </div>
+
+                        <!-- Remark -->
+                        <div class="mb-3">
+                            <label for="remark" class="form-label">Remark:</label>
+                            <input type="text" id="remark" name="remark" class="form-control"
+                                   value="{{ receipt.remark|default:'' }}" placeholder="Enter remarks (optional)">
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">
+                                {% if receipt %}Update{% else %}Submit{% endif %}
+                            </button>
+                            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updatePartyBalance() {
+        const partySelect = document.getElementById("partyname");
+        const selectedOption = partySelect.options[partySelect.selectedIndex];
+        const balance = parseFloat(selectedOption.dataset.balance || 0);
+        document.getElementById("partyBalance").textContent = `₹${balance.toFixed(2)}`;
+    }
+
+    // Call on page load if a party is preselected
+    document.addEventListener('DOMContentLoaded', function () {
+        if (document.getElementById("partyname").value) {
+            updatePartyBalance();
+        }
+    });
+</script>
+
+{% endblock %}

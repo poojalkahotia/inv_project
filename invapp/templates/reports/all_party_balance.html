@@ -1,0 +1,59 @@
+{% extends "invapp/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">All Party Balance Report</h2>
+
+    <!-- Button to Show Balances -->
+    <div class="row mt-3 justify-content-center">
+        <div class="col-auto">
+            <button class="btn btn-primary" onclick="document.getElementById('balanceTable').style.display = 'block'">
+                Show All Party Balance
+            </button>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'all_party_balance_pdf' %}" class="btn btn-danger ml-2">
+                🧾 Download PDF
+            </a>
+        </div>
+</div>
+
+
+    <!-- Balance Summary Table -->
+    <div id="balanceTable" style="display:none;" class="mt-4">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Party Name</th>
+                    <th>Opening Debit</th>
+                    <th>Opening Credit</th>
+                    <th>Total Purchase</th>
+                    <th>Total Sale</th>
+                    <th>Total Receipt</th>
+                    <th>Total Payment</th>
+                    <th>Total Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for party in party_balances %}
+                <tr>
+                    <td>{{ party.partyname }}</td>
+                    <td>{{ party.opening_debit|floatformat:2 }}</td>
+                    <td>{{ party.opening_credit|floatformat:2 }}</td>
+                    <td>{{ party.total_purchase|floatformat:2 }}</td>
+                    <td>{{ party.total_sale|floatformat:2 }}</td>
+                    <td>{{ party.total_receipt|floatformat:2 }}</td>
+                    <td>{{ party.total_payment|floatformat:2 }}</td>
+                    <td class="{% if party.total_balance >= 0 %}text-success{% else %}text-danger{% endif %}">
+                        {{ party.total_balance|floatformat:2 }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">No parties found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

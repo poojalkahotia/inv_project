@@ -1,0 +1,79 @@
+{% extends "invapp/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Purchase Report</h2>
+
+    <!-- Filter Form -->
+    <form method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="from_date">From Date:</label>
+                <input type="date" id="from_date" name="from_date" class="form-control" value="{{ from_date }}" required>
+            </div>
+            <div class="col-md-4">
+                <label for="to_date">To Date:</label>
+                <input type="date" id="to_date" name="to_date" class="form-control" value="{{ to_date }}" required>
+            </div>
+            <div class="col-md-4">
+                <label for="partyname">Party Name:</label>
+                <select name="partyname" id="partyname" class="form-control">
+                    <option value="">All Parties</option>
+                    {% for party in parties %}
+                        <option value="{{ party.partyname }}" {% if selected_party == party.partyname %}selected{% endif %}>
+                            {{ party.partyname }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <button onclick="window.print()" class="btn btn-success">Print Report</button>
+            <a href="{% url 'purchase_report_pdf' %}?from_date={{ from_date }}&to_date={{ to_date }}&partyname={{ selected_party }}" target="_blank" class="btn btn-danger">Download PDF</a>
+        </div>
+        
+
+    </form>
+
+    <!-- Purchase Report Table -->
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Invoice No</th>
+                <th>Invoice Date</th>
+                <th>Party Name</th>
+                <th>Amount (₹)</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for purchase in purchases %}
+                <tr>
+                    <td>{{ purchase.invno }}</td>
+                    <td>{{ purchase.invdate|date:"Y-m-d" }}</td>
+                    <td>{{ purchase.partyname }}</td>
+                    <td>₹{{ purchase.amount|floatformat:2 }}</td>
+                    <td>{{ purchase.remark }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No records found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Total Amount -->
+    <div class="row mt-4">
+        <div class="col-md-4 offset-md-8">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Total Purchase Amount</th>
+                    <td>₹{{ total_amount|floatformat:2 }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "invapp/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Party Master Report</h2>
+
+    <!-- Filter Form -->
+    <form method="POST" class="mb-4">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-4">
+                <label for="from_date">From Date</label>
+                <input type="date" name="from_date" class="form-control" id="from_date" value="{{ from_date }}" required>
+            </div>
+            <div class="col-md-4">
+                <label for="to_date">To Date</label>
+                <input type="date" name="to_date" class="form-control" id="to_date" value="{{ to_date }}" required>
+            </div>
+            <div class="col-md-4">
+                <label for="partyname">Select Party</label>
+                <select name="partyname" class="form-control" id="partyname">
+                    <option value="" selected>All Parties</option>
+                    {% for party in parties %}
+                        <option value="{{ party }}" {% if party == request.POST.partyname %}selected{% endif %}>
+                            {{ party }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary">Generate Report</button>
+        </div>
+    </form>
+
+    <!-- Report Table -->
+    {% if report_data %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Party Name</th>
+                    <th>Invoice No</th>
+                    <th>Amount</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in report_data %}
+                <tr>
+                    <td>{{ entry.invdate|date:"Y-m-d" }}</td>
+                    <td>{{ entry.partyname }}</td>
+                    <td>{{ entry.invno }}</td>
+                    <td>₹{{ entry.amount|floatformat:2 }}</td>
+                    <td>{{ entry.remark }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Print & Export Buttons -->
+    <div class="mt-4 text-center">
+        <button onclick="window.print()" class="btn btn-success">Print Report</button>
+        <button class="btn btn-secondary" onclick="exportTableToCSV('party_master_report.csv')">Download CSV</button>
+    </div>
+    {% else %}
+        <p class="text-center text-danger">No records found for the selected filters.</p>
+    {% endif %}
+</div>
+
+<!-- JavaScript for CSV Export -->
+<script>
+function exportTableToCSV(filename) {
+    var csv = [];
+    var rows = document.querySelectorAll("table tr");
+
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+
+        for (var j = 0; j < cols.length; j++)
+            row.push(cols[j].innerText);
+
+        csv.push(row.join(","));
+    }
+
+    var csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+    var downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(csvFile);
+    downloadLink.download = filename;
+    downloadLink.click();
+}
+</script>
+
+{% endblock %}

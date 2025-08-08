@@ -1,0 +1,40 @@
+{% extends 'invapp/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center text-primary mb-4">Payment Entries</h2>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Entry No</th>
+                    <th>Entry Date</th>
+                    <th>Party Name</th>
+                    <th>Amount</th>
+                    <th>Remark</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in payments %}
+                <tr>
+                    <td>{{ entry.entryno }}</td>
+                    <td>{{ entry.entrydate }}</td>
+                    <td>{{ entry.partyname }}</td>
+                    <td>{{ entry.amount }}</td>
+                    <td>{{ entry.remark }}</td>
+                    <td class="party-item-actions">
+                        <a href="{% url 'update_payment' entry.entryno %}" class="btn btn-warning  action-btn">UPDATE</a>
+                        <a href="{% url 'delete_payment' entry.entryno %}" class="btn btn-danger  action-btn" 
+                           onclick="return confirm('Are you sure?');">DELETE</a>
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'invapp/base.html' %}
+{% load static %}
+
+{% block title %}Manage Companies{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <!-- Left: Form -->
+    <div class="col-md-6">
+      <h3 class="mb-3 text-primary">🏢 Manage Company</h3>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="POST">
+        {% csrf_token %}
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <label for="id_company" class="form-label mb-0">Company:</label>
+          {{ form.company }}
+        </div>
+
+        <div class="mt-2">
+          <button type="submit" class="btn btn-success" name="action" value="save">Save</button>
+          <button type="submit" class="btn btn-danger" name="action" value="delete" onclick="return confirm('Are you sure you want to delete this company?');">Delete</button>
+          <a href="{% url 'dashboard' %}" class="btn btn-secondary">Exit</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Right: Table of Companies -->
+    <div class="col-md-6">
+      <h5 class="text-success mb-2">📋 Company List</h5>
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Company</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for comp in companies %}
+            <tr onclick="selectCompany('{{ comp.company }}')" style="cursor: pointer;">
+              <td>{{ comp.company }}</td>
+            </tr>
+          {% empty %}
+            <tr><td class="text-center text-muted">No companies added yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function selectCompany(company) {
+    const input = document.querySelector('#id_company');
+    input.value = company;
+  }
+
+  // Hide message box after 3 seconds
+  setTimeout(() => {
+    document.querySelectorAll('.alert').forEach(el => {
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 500);
+    });
+  }, 3000);
+</script>
+{% endblock %}

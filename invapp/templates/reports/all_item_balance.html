@@ -1,0 +1,48 @@
+{% extends "invapp/base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">All Item Balance Report</h2>
+
+    <!-- Button to Show Balances -->
+    <div class="text-center mb-3">
+        <button class="btn btn-primary" onclick="document.getElementById('balanceTable').style.display = 'block'">
+            Show All Item Balance
+        </button>
+        <a href="{% url 'all_item_balance_pdf' %}" class="btn btn-danger ml-2">
+           🧾 Download PDF
+        </a>
+    </div>
+
+    <!-- Balance Summary Table -->
+    <div id="balanceTable" style="display:none;" class="mt-4">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Opening Stock</th>
+                    <th>Total Purchase</th>
+                    <th>Total Sale</th>
+                    <th>Total Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in item_balances %}
+                <tr>
+                    <td>{{ item.itemname }}</td>
+                    <td>{{ item.opening_stock }}</td>
+                    <td>{{ item.total_purchase }}</td>
+                    <td>{{ item.total_sale }}</td>
+                    <td class="{% if item.total_balance >= 0 %}text-success{% else %}text-danger{% endif %}">
+                        {{ item.total_balance }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No items found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
