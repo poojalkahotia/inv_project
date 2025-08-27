@@ -11,3 +11,4 @@ fpdf2
 pillow
 tkcalendar
 django-widget-tweaks
+num2words
