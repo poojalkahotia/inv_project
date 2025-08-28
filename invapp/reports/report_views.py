@@ -500,7 +500,12 @@ def sales_report_pdf(request):
         filters["partyname"] = partyname
 
     sale = SaleMaster.objects.filter(**filters).order_by("invdate").first()
+    if not sale:  # ✅ safety check
+        return HttpResponse("⚠️ No sales found for given filter", status=404)
+
     details = SaleDetails.objects.filter(salemaster=sale)
+    if not details.exists():  # ✅ safety check
+        return HttpResponse("⚠️ No sale details found", status=404)
 
     pdf = SaleReportPDF(sale, details)
     pdf.add_page()
@@ -508,7 +513,6 @@ def sales_report_pdf(request):
 
     pdf_data = bytes(pdf.output(dest="S"))
     return HttpResponse(pdf_data, content_type="application/pdf")
-
 
 def recmaster_report(request):
     # Default date range (current month)
