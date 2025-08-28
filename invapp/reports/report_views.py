@@ -490,21 +490,14 @@ def salemaster_report(request):
     }
     return render(request, 'reports/salemaster_report.html', context)
 
-def sales_report_pdf(request):
-    from_date = request.GET.get("from_date")
-    to_date = request.GET.get("to_date")
-    partyname = request.GET.get("partyname", "")
-
-    filters = {"invdate__range": [from_date, to_date]}
-    if partyname:
-        filters["partyname"] = partyname
-
-    sale = SaleMaster.objects.filter(**filters).order_by("invdate").first()
-    if not sale:  # ✅ safety check
-        return HttpResponse("⚠️ No sales found for given filter", status=404)
+def sale_pdf(request, invno):
+    try:
+        sale = SaleMaster.objects.get(invno=invno)
+    except SaleMaster.DoesNotExist:
+        return HttpResponse("⚠️ Sale not found", status=404)
 
     details = SaleDetails.objects.filter(salemaster=sale)
-    if not details.exists():  # ✅ safety check
+    if not details.exists():
         return HttpResponse("⚠️ No sale details found", status=404)
 
     pdf = SaleReportPDF(sale, details)
