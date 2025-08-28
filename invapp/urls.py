@@ -11,10 +11,12 @@ from invapp.views.dashboard_views import dashboard
 from invapp.views.company_views import company_view
 from invapp.views import purchase_views,sale_views,rec_views,pay_views
 from invapp.reports import report_views 
-
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
+from django.urls import path, reverse_lazy
 urlpatterns = [
     # Dashboard
-    path('', dashboard, name='dashboard'),
+    path("dashboard/", dashboard, name='dashboard'),
 
     # Company URLs
     path('companies/', company_view, name='company'),
@@ -83,7 +85,14 @@ urlpatterns = [
     path('receipt_report/pdf/', report_views.receipt_report_pdf, name='receipt_report_pdf'),
     path('payment_report/pdf/', report_views.payment_report_pdf, name='payment_report_pdf'),
 
+    # Authentication URLs
+    path("login/", auth_views.LoginView.as_view(template_name="auth/login.html"), name="login"),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("password_change/",login_required (auth_views.PasswordChangeView.as_view(template_name="auth/password_change.html", success_url=reverse_lazy('password_change_done'))), name="password_change"),
+    path("password_change/done/",login_required (auth_views.PasswordChangeDoneView.as_view(template_name="auth/password_change_done.html")), name="password_change_done"),
 
+    # Root URL redirects to login page
+    path("", auth_views.LoginView.as_view(template_name="auth/login.html")),
 
 
 

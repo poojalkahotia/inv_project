@@ -38,7 +38,6 @@
                     </ul>
                 </li>
 
-                
                 <!-- Entry Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Entry</a>
@@ -50,45 +49,53 @@
                     </ul>
                 </li>
 
-
                 <!-- Report Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Report</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{% url 'all_party_balance' %}">All Party Balance</a></li>
-                                <li><a class="dropdown-item" href="{% url 'party-st' %}">Party Statement</a></li>
-                                <li><a class="dropdown-item" href="{% url 'all_item_balance' %}">Item Balance</a></li>
-                                <li><a class="dropdown-item" href="{% url 'item_statement' %}">Item Statement</a></li>
-                                <li><a class="dropdown-item" href="{% url 'purmaster_report' %}">Purchase Report</a></li>
-                                <li><a class="dropdown-item" href="{% url 'salemaster_report' %}">Sale Report</a></li>
-                                <li><a class="dropdown-item" href="{% url 'recmaster_report' %}">Receipt Report</a></li>
-                                <li><a class="dropdown-item" href="{% url 'paymaster_report' %}">Payment Report</a></li>
+                        <li><a class="dropdown-item" href="{% url 'party-st' %}">Party Statement</a></li>
+                        <li><a class="dropdown-item" href="{% url 'all_item_balance' %}">Item Balance</a></li>
+                        <li><a class="dropdown-item" href="{% url 'item_statement' %}">Item Statement</a></li>
+                        <li><a class="dropdown-item" href="{% url 'purmaster_report' %}">Purchase Report</a></li>
+                        <li><a class="dropdown-item" href="{% url 'salemaster_report' %}">Sale Report</a></li>
+                        <li><a class="dropdown-item" href="{% url 'recmaster_report' %}">Receipt Report</a></li>
+                        <li><a class="dropdown-item" href="{% url 'paymaster_report' %}">Payment Report</a></li>
                     </ul>
                 </li>
             </ul>
 
             <!-- Exit / Logout / Profile -->
-            <span class="navbar-text me-3">
-                Logged in as <strong>Admin</strong>
-            </span>
-            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Exit</a>
+            {% if user.is_authenticated %}
+                <div class="d-flex align-items-center ms-auto">
+                    <span class="navbar-text me-3">
+                        Logged in as <strong>{{ user.username }}</strong>
+                    </span>
+                    <a href="{% url 'password_change' %}" class="btn btn-outline-warning me-2">Change Password</a>
+                    <form method="post" action="{% url 'logout' %}" class="mb-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger">Logout</button>
+                    </form>
+                </div>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-primary ms-auto">Login</a>
+            {% endif %}
+
         </div>
     </div>
 </nav>
-    
-
-
 
 <div class="container mt-4">
     <!-- Global Flash Messages -->
     {% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
     {% endif %}
+
     {% block content %}
     {% endblock %}
 </div>

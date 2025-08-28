@@ -12,3 +12,4 @@ pillow
 tkcalendar
 django-widget-tweaks
 num2words
+whitenoise===6.9.0

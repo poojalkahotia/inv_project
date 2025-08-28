@@ -85,3 +85,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CSRF trusted origins (for Render)
 CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com"]
+
+# settings.py ke end me add karo
+LOGIN_URL = '/login/' 
+LOGIN_REDIRECT_URL = '/dashboard/'   # login ke baad yeh page khulega
+LOGOUT_REDIRECT_URL = '/login/'      # logout ke baad login page pe redirect

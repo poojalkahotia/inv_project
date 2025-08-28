@@ -1,5 +1,4 @@
-/* style.css */
-
+/* Navbar styling (unchanged) */
 .navbar-custom {
     background-color: #f8f9fa;
     border-bottom: 2px solid #dee2e6;
@@ -14,3 +13,15 @@
 .navbar-custom .nav-link:hover {
     color: #0d6efd;
 }
+
+/* Login page specific styling */
+body.login-page .login-card {
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+

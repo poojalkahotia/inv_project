@@ -7,6 +7,8 @@ from datetime import date
 from decimal import Decimal
 from django.http import HttpResponse
 from invapp.utils.pdf_utils import PartyBalancePDF,ItemBalancePDF,PartyStatementPDF,PurchaseReportPDF,SaleReportPDF,ReceiptReportPDF,PaymentReportPDF
+from invapp.reports.pdf_reports import SaleReportPDF
+
 
 def all_party_balance(request):
     party_objs = HeadParty.objects.all().order_by("partyname")
@@ -497,15 +499,15 @@ def sales_report_pdf(request):
     if partyname:
         filters["partyname"] = partyname
 
-    sales = SaleMaster.objects.filter(**filters).order_by("invdate")
+    sale = SaleMaster.objects.filter(**filters).order_by("invdate").first()
+    details = SaleDetails.objects.filter(salemaster=sale)
 
-    pdf = SaleReportPDF()
+    pdf = SaleReportPDF(sale, details)
     pdf.add_page()
-    pdf.sales_table(sales)
+    pdf.sales_table()
 
-    pdf_data = bytes(pdf.output(dest="S"))  # ✅ convert to bytes
+    pdf_data = bytes(pdf.output(dest="S"))
     return HttpResponse(pdf_data, content_type="application/pdf")
-
 
 
 def recmaster_report(request):
