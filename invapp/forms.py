@@ -1,8 +1,27 @@
 # invapp/forms.py
 
 from django import forms
-from .models import HeadParty,HeadCategory,HeadCompany,HeadItem,PurDetails,PurMaster,SaleMaster,SaleDetails
+from .models import HeadCompanyinfo,HeadParty,HeadCategory,HeadCompany,HeadItem,PurDetails,PurMaster,SaleMaster,SaleDetails
 from num2words import num2words
+
+class CompanyinfoForm(forms.ModelForm):
+    class Meta:
+        model = HeadCompanyinfo
+        fields = '__all__'
+        widgets = {
+            'companyname': forms.TextInput(attrs={'class': 'form-control'}),
+            'add1': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'add2': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'state': forms.TextInput(attrs={'class': 'form-control'}),
+            'mobile': forms.TextInput(attrs={'class': 'form-control'}),
+            'otherno': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'remark': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'term1': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'term2': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+        }
+
 
 class PartyForm(forms.ModelForm):
     class Meta:

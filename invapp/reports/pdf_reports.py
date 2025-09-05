@@ -1,13 +1,26 @@
 from fpdf import FPDF
+from invapp.models import HeadCompanyinfo
 
 class SaleReportPDF(FPDF):
-    def __init__(self, sale, details):
+    def __init__(self, sale, details, company=None):
         super().__init__()
         self.sale = sale
         self.details = details
+        self.company = company
 
     # ---------- HEADER ----------
     def header(self):
+        company = HeadCompanyinfo.objects.first()
+
+        # Company Info (Top Center)
+        if company:
+            self.set_font("Arial", "B", 14)
+            self.cell(0, 8, company.companyname, ln=1, align="C")
+            self.set_font("Arial", "", 10)
+            self.cell(0, 6, f"{company.add1}, {company.city}, {company.state}", ln=1, align="C")
+            self.cell(0, 6, f"Mobile: {company.mobile}", ln=1, align="C")
+            self.ln(5)
+
         # LEFT -> Party Info
         self.set_font("Arial", "", 10)
         self.multi_cell(
@@ -21,13 +34,14 @@ class SaleReportPDF(FPDF):
         )
 
         # RIGHT -> Invoice Info
-        self.set_xy(120, 20)  # Move cursor right side
+        self.set_xy(120, 40)  # ✅ Fixed position so it does not overlap
         self.set_font("Arial", "B", 10)
         self.cell(70, 6, f"Invoice No: {self.sale.invno}", ln=1, align="R")
         self.set_x(120)
         self.cell(70, 6, f"Date: {self.sale.invdate.strftime('%d-%m-%Y')}", ln=1, align="R")
 
-        self.ln(10)  # spacing
+        self.ln(15)  # ✅ Extra spacing before table starts
+
 
     # ---------- TABLE ----------
     def sales_table(self):
@@ -46,9 +60,7 @@ class SaleReportPDF(FPDF):
 
     # ---------- FOOTER ----------
     def footer(self):
-        self.set_y(-60)  # Move to near bottom
-
-        # LEFT -> Remark & Amt in words
+        self.set_y(-60)
         self.set_font("Arial", "I", 9)
         self.multi_cell(
             100, 6,
@@ -56,7 +68,6 @@ class SaleReportPDF(FPDF):
             f"Amount in Words: {self.sale.amtinwords or ''}"
         )
 
-        # RIGHT -> Totals
         self.set_xy(120, -50)
         self.set_font("Arial", "B", 10)
         self.cell(70, 6, f"Total: {self.sale.amount:.2f}", ln=1, align="R")

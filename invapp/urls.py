@@ -9,6 +9,7 @@ from invapp.views.category_views import category_view
 from invapp.views.item_views import item_view,  item_delete
 from invapp.views.dashboard_views import dashboard
 from invapp.views.company_views import company_view
+from invapp.views.companyinfo_views import companyinfo_view
 from invapp.views import purchase_views,sale_views,rec_views,pay_views
 from invapp.reports import report_views 
 from django.contrib.auth import views as auth_views
@@ -17,6 +18,11 @@ from django.urls import path, reverse_lazy
 urlpatterns = [
     # Dashboard
     path("dashboard/", dashboard, name='dashboard'),
+
+    # Companyinfo URLs
+    
+    path('companyinfo/', companyinfo_view, name='companyinfo'),
+
 
     # Company URLs
     path('companies/', company_view, name='company'),

@@ -3,6 +3,24 @@ from django.utils import timezone
 from decimal import Decimal
 from django.db.models import Sum
 
+class HeadCompanyinfo(models.Model):
+    companyname = models.CharField(max_length=100, primary_key=True)
+    add1 = models.TextField(blank=True)
+    add2 = models.TextField(blank=True)
+    city = models.TextField(blank=True)
+    state = models.TextField(blank=True)
+    mobile = models.TextField(blank=True)
+    otherno = models.TextField(blank=True)
+    email = models.EmailField(blank=True)
+    remark = models.TextField(blank=True)
+    term1 = models.TextField(blank=True)
+    term2 = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.companyname
+
+
+
 class HeadParty(models.Model):
     partyname = models.CharField(max_length=100, primary_key=True)
     add1 = models.CharField(max_length=200, blank=True)
@@ -28,7 +46,7 @@ class HeadParty(models.Model):
         opening_debit = Decimal(self.openingdebit or 0)
         opening_credit = Decimal(self.openingcredit or 0)
 
-        return purchase_total - sales_total + receipt_total - payment_total + opening_debit - opening_credit
+        return purchase_total - sales_total + receipt_total - payment_total - opening_debit + opening_credit
     
 
 class HeadCategory(models.Model):
