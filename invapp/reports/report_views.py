@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from invapp.models import PurMaster,HeadParty,HeadItem,SaleMaster,RecMaster,PayMaster,SaleDetails,PurDetails
+from invapp.models import PurMaster,HeadParty,HeadItem,SaleMaster,RecMaster,PayMaster,SaleDetails,PurDetails,HeadCompanyinfo
 from invapp.reports.party_report import get_party_report
 from datetime import datetime
 from django.db.models import Sum
@@ -57,7 +57,6 @@ def all_party_balance_pdf(request):
         opening_debit = party.openingdebit or 0
         opening_credit = party.openingcredit or 0
 
-        # Updated Balance Calculation
         balance = (
             Decimal(purchases) - Decimal(sales) +
             Decimal(receipts) - Decimal(payments) +
@@ -78,13 +77,13 @@ def all_party_balance_pdf(request):
     pdf = PartyBalancePDF()
     pdf.add_page()
 
-    # Updated: 8 columns
     col_widths = [30, 18, 18, 22, 22, 22, 22, 22]
     headers = ["Party", "Opn Dr", "Opn Cr", "Purchase", "Sale", "Receipt", "Payment", "Balance"]
 
     pdf.add_table(data, col_widths, headers)
 
-    pdf_data = bytes(pdf.output(dest="S"))
+    # ✅ FIXED line
+    pdf_data = pdf.output(dest="S").encode("latin-1")
     return HttpResponse(pdf_data, content_type="application/pdf")
 
 def party_master_report(request):
@@ -347,7 +346,8 @@ def all_item_balance_pdf(request):
 
     pdf.add_table(data, col_widths, headers)
 
-    pdf_data = bytes(pdf.output(dest="S"))
+    # ✅ FIXED
+    pdf_data = pdf.output(dest="S").encode("latin-1")
     return HttpResponse(pdf_data, content_type="application/pdf")
 
 
@@ -457,8 +457,8 @@ def purchase_report_pdf(request):
     pdf.add_page()
     pdf.render_purchase_report(purchases, total_amount, from_date, to_date, partyname)
 
-    pdf_output = bytes(pdf.output(dest="S"))
-
+    # ✅ FIXED
+    pdf_output = pdf.output(dest="S").encode("latin-1")
     return HttpResponse(pdf_output, content_type="application/pdf")
 
 
@@ -500,12 +500,16 @@ def sale_pdf(request, invno):
     if not details.exists():
         return HttpResponse("⚠️ No sale details found", status=404)
 
-    pdf = SaleReportPDF(sale, details)
+    # ✅ Company info load karo
+    company = HeadCompanyinfo.objects.first()
+
+    pdf = SaleReportPDF(sale, details, company)
     pdf.add_page()
     pdf.sales_table()
 
-    pdf_data = bytes(pdf.output(dest="S"))
+    pdf_data = pdf.output(dest="S").encode("latin-1")
     return HttpResponse(pdf_data, content_type="application/pdf")
+
 
 def recmaster_report(request):
     # Default date range (current month)
@@ -550,9 +554,9 @@ def receipt_report_pdf(request):
     pdf.add_page()
     pdf.receipts_table(receipts)
 
-    pdf_data = bytes(pdf.output(dest="S"))
+    # ✅ Fix: use encode("latin-1") instead of bytes()
+    pdf_data = pdf.output(dest="S").encode("latin-1")
     return HttpResponse(pdf_data, content_type="application/pdf")
-
 
 
 def paymaster_report(request):
@@ -598,7 +602,8 @@ def payment_report_pdf(request):
     pdf.add_page()
     pdf.payments_table(payments)
 
-    pdf_data = bytes(pdf.output(dest="S"))
+    pdf_data = pdf.output(dest="S").encode("latin-1")
     return HttpResponse(pdf_data, content_type="application/pdf")
+
 
 

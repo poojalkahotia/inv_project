@@ -1,0 +1,818 @@
+[
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "admin",
+        "model": "logentry"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "auth",
+        "model": "permission"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "auth",
+        "model": "group"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "auth",
+        "model": "user"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "contenttypes",
+        "model": "contenttype"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "sessions",
+        "model": "session"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "invapp",
+        "model": "headcategory"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "invapp",
+        "model": "headparty"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "invapp",
+        "model": "headcompany"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "invapp",
+        "model": "headitem"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "invapp",
+        "model": "purmaster"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "invapp",
+        "model": "purdetails"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "invapp",
+        "model": "salemaster"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "invapp",
+        "model": "saledetails"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "invapp",
+        "model": "paymaster"
+    }
+},
+{
+    "model": "contenttypes.contenttype",
+    "fields": {
+        "app_label": "invapp",
+        "model": "recmaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add log entry",
+        "content_type": [
+            "admin",
+            "logentry"
+        ],
+        "codename": "add_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change log entry",
+        "content_type": [
+            "admin",
+            "logentry"
+        ],
+        "codename": "change_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete log entry",
+        "content_type": [
+            "admin",
+            "logentry"
+        ],
+        "codename": "delete_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view log entry",
+        "content_type": [
+            "admin",
+            "logentry"
+        ],
+        "codename": "view_logentry"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add permission",
+        "content_type": [
+            "auth",
+            "permission"
+        ],
+        "codename": "add_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change permission",
+        "content_type": [
+            "auth",
+            "permission"
+        ],
+        "codename": "change_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete permission",
+        "content_type": [
+            "auth",
+            "permission"
+        ],
+        "codename": "delete_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view permission",
+        "content_type": [
+            "auth",
+            "permission"
+        ],
+        "codename": "view_permission"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add group",
+        "content_type": [
+            "auth",
+            "group"
+        ],
+        "codename": "add_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change group",
+        "content_type": [
+            "auth",
+            "group"
+        ],
+        "codename": "change_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete group",
+        "content_type": [
+            "auth",
+            "group"
+        ],
+        "codename": "delete_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view group",
+        "content_type": [
+            "auth",
+            "group"
+        ],
+        "codename": "view_group"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add user",
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "codename": "add_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change user",
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "codename": "change_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete user",
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "codename": "delete_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view user",
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "codename": "view_user"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add content type",
+        "content_type": [
+            "contenttypes",
+            "contenttype"
+        ],
+        "codename": "add_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change content type",
+        "content_type": [
+            "contenttypes",
+            "contenttype"
+        ],
+        "codename": "change_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete content type",
+        "content_type": [
+            "contenttypes",
+            "contenttype"
+        ],
+        "codename": "delete_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view content type",
+        "content_type": [
+            "contenttypes",
+            "contenttype"
+        ],
+        "codename": "view_contenttype"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add session",
+        "content_type": [
+            "sessions",
+            "session"
+        ],
+        "codename": "add_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change session",
+        "content_type": [
+            "sessions",
+            "session"
+        ],
+        "codename": "change_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete session",
+        "content_type": [
+            "sessions",
+            "session"
+        ],
+        "codename": "delete_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view session",
+        "content_type": [
+            "sessions",
+            "session"
+        ],
+        "codename": "view_session"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add head category",
+        "content_type": [
+            "invapp",
+            "headcategory"
+        ],
+        "codename": "add_headcategory"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change head category",
+        "content_type": [
+            "invapp",
+            "headcategory"
+        ],
+        "codename": "change_headcategory"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete head category",
+        "content_type": [
+            "invapp",
+            "headcategory"
+        ],
+        "codename": "delete_headcategory"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view head category",
+        "content_type": [
+            "invapp",
+            "headcategory"
+        ],
+        "codename": "view_headcategory"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add head party",
+        "content_type": [
+            "invapp",
+            "headparty"
+        ],
+        "codename": "add_headparty"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change head party",
+        "content_type": [
+            "invapp",
+            "headparty"
+        ],
+        "codename": "change_headparty"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete head party",
+        "content_type": [
+            "invapp",
+            "headparty"
+        ],
+        "codename": "delete_headparty"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view head party",
+        "content_type": [
+            "invapp",
+            "headparty"
+        ],
+        "codename": "view_headparty"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add head company",
+        "content_type": [
+            "invapp",
+            "headcompany"
+        ],
+        "codename": "add_headcompany"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change head company",
+        "content_type": [
+            "invapp",
+            "headcompany"
+        ],
+        "codename": "change_headcompany"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete head company",
+        "content_type": [
+            "invapp",
+            "headcompany"
+        ],
+        "codename": "delete_headcompany"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view head company",
+        "content_type": [
+            "invapp",
+            "headcompany"
+        ],
+        "codename": "view_headcompany"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add head item",
+        "content_type": [
+            "invapp",
+            "headitem"
+        ],
+        "codename": "add_headitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change head item",
+        "content_type": [
+            "invapp",
+            "headitem"
+        ],
+        "codename": "change_headitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete head item",
+        "content_type": [
+            "invapp",
+            "headitem"
+        ],
+        "codename": "delete_headitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view head item",
+        "content_type": [
+            "invapp",
+            "headitem"
+        ],
+        "codename": "view_headitem"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add pur master",
+        "content_type": [
+            "invapp",
+            "purmaster"
+        ],
+        "codename": "add_purmaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change pur master",
+        "content_type": [
+            "invapp",
+            "purmaster"
+        ],
+        "codename": "change_purmaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete pur master",
+        "content_type": [
+            "invapp",
+            "purmaster"
+        ],
+        "codename": "delete_purmaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view pur master",
+        "content_type": [
+            "invapp",
+            "purmaster"
+        ],
+        "codename": "view_purmaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add pur details",
+        "content_type": [
+            "invapp",
+            "purdetails"
+        ],
+        "codename": "add_purdetails"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change pur details",
+        "content_type": [
+            "invapp",
+            "purdetails"
+        ],
+        "codename": "change_purdetails"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete pur details",
+        "content_type": [
+            "invapp",
+            "purdetails"
+        ],
+        "codename": "delete_purdetails"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view pur details",
+        "content_type": [
+            "invapp",
+            "purdetails"
+        ],
+        "codename": "view_purdetails"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add sale master",
+        "content_type": [
+            "invapp",
+            "salemaster"
+        ],
+        "codename": "add_salemaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change sale master",
+        "content_type": [
+            "invapp",
+            "salemaster"
+        ],
+        "codename": "change_salemaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete sale master",
+        "content_type": [
+            "invapp",
+            "salemaster"
+        ],
+        "codename": "delete_salemaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view sale master",
+        "content_type": [
+            "invapp",
+            "salemaster"
+        ],
+        "codename": "view_salemaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add sale details",
+        "content_type": [
+            "invapp",
+            "saledetails"
+        ],
+        "codename": "add_saledetails"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change sale details",
+        "content_type": [
+            "invapp",
+            "saledetails"
+        ],
+        "codename": "change_saledetails"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete sale details",
+        "content_type": [
+            "invapp",
+            "saledetails"
+        ],
+        "codename": "delete_saledetails"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view sale details",
+        "content_type": [
+            "invapp",
+            "saledetails"
+        ],
+        "codename": "view_saledetails"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add pay master",
+        "content_type": [
+            "invapp",
+            "paymaster"
+        ],
+        "codename": "add_paymaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change pay master",
+        "content_type": [
+            "invapp",
+            "paymaster"
+        ],
+        "codename": "change_paymaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete pay master",
+        "content_type": [
+            "invapp",
+            "paymaster"
+        ],
+        "codename": "delete_paymaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view pay master",
+        "content_type": [
+            "invapp",
+            "paymaster"
+        ],
+        "codename": "view_paymaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can add rec master",
+        "content_type": [
+            "invapp",
+            "recmaster"
+        ],
+        "codename": "add_recmaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can change rec master",
+        "content_type": [
+            "invapp",
+            "recmaster"
+        ],
+        "codename": "change_recmaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can delete rec master",
+        "content_type": [
+            "invapp",
+            "recmaster"
+        ],
+        "codename": "delete_recmaster"
+    }
+},
+{
+    "model": "auth.permission",
+    "fields": {
+        "name": "Can view rec master",
+        "content_type": [
+            "invapp",
+            "recmaster"
+        ],
+        "codename": "view_recmaster"
+    }
+}
+]

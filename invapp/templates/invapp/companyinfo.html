@@ -1,0 +1,104 @@
+{% extends 'invapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            {% if company and not editing %}
+                <!-- Show saved company info with Edit button -->
+                <h3 class="mb-3 text-primary">🏢 Company Info</h3>
+                <table class="table table-bordered">
+                    <tr><th>Company Name</th><td>{{ company.companyname }}</td></tr>
+                    <tr><th>Address 1</th><td>{{ company.add1 }}</td></tr>
+                    <tr><th>Address 2</th><td>{{ company.add2 }}</td></tr>
+                    <tr><th>City</th><td>{{ company.city }}</td></tr>
+                    <tr><th>State</th><td>{{ company.state }}</td></tr>
+                    <tr><th>Mobile</th><td>{{ company.mobile }}</td></tr>
+                    <tr><th>Other No</th><td>{{ company.otherno }}</td></tr>
+                    <tr><th>Email</th><td>{{ company.email }}</td></tr>
+                    <tr><th>Remark</th><td>{{ company.remark }}</td></tr>
+                    <tr><th>Term 1</th><td>{{ company.term1 }}</td></tr>
+                    <tr><th>Term 2</th><td>{{ company.term2 }}</td></tr>
+                </table>
+
+                <a href="{% url 'companyinfo' %}?edit=true" class="btn btn-warning">✏️ Edit</a>
+
+            {% else %}
+                <!-- Add/Edit Form -->
+                <h3 class="mb-3 text-primary">
+                    {% if editing %} ✏️ Edit Company {% else %} ➕ Add Company {% endif %}
+                </h3>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-2 d-flex align-items-center">
+                        <label for="id_companyname" class="form-label me-2" style="width: 120px;">Company Name:</label>
+                        {{ form.companyname|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mb-2 d-flex align-items-center">
+                        <label for="id_add1" class="form-label me-2" style="width: 120px;">Address 1:</label>
+                        {{ form.add1|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mb-2 d-flex align-items-center">
+                        <label for="id_add2" class="form-label me-2" style="width: 120px;">Address 2:</label>
+                        {{ form.add2|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mb-2 d-flex align-items-center">
+                        <label for="id_city" class="form-label me-2" style="width: 120px;">City:</label>
+                        {{ form.city|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mb-2 d-flex align-items-center">
+                        <label for="id_state" class="form-label me-2" style="width: 120px;">State:</label>
+                        {{ form.state|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mb-2 d-flex align-items-center">
+                        <label for="id_mobile" class="form-label me-2" style="width: 120px;">Mobile:</label>
+                        {{ form.mobile|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mb-2 d-flex align-items-center">
+                        <label for="id_otherno" class="form-label me-2" style="width: 120px;">Other No:</label>
+                        {{ form.otherno|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mb-2 d-flex align-items-center">
+                        <label for="id_email" class="form-label me-2" style="width: 120px;">Email:</label>
+                        {{ form.email|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mb-2 d-flex align-items-start">
+                        <label for="id_remark" class="form-label me-2" style="width: 120px;">Remark:</label>
+                        {{ form.remark|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mb-2 d-flex align-items-start">
+                        <label for="id_term1" class="form-label me-2" style="width: 120px;">Term 1:</label>
+                        {{ form.term1|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mb-2 d-flex align-items-start">
+                        <label for="id_term2" class="form-label me-2" style="width: 120px;">Term 2:</label>
+                        {{ form.term2|add_class:"form-control form-control-sm w-75" }}
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-success">
+                            {% if editing %} Update {% else %} Save {% endif %}
+                        </button>
+                        <a href="{% url 'companyinfo' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

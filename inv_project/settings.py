@@ -5,9 +5,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = os.getenv("DEBUG", "True") == "True"
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
-
+#DEBUG = True
 # Apps
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -53,8 +53,12 @@ WSGI_APPLICATION = "inv_project.wsgi.application"
 # Database (SQLite for simplicity)
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'inv_project',     # Step 1 में बनाया database
+        'USER': 'postgres',        # pgAdmin वाला username
+        'PASSWORD': 'keshav1604',   # pgAdmin वाला password
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
