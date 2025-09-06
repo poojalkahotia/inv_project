@@ -14,3 +14,4 @@ django-widget-tweaks
 num2words
 whitenoise===6.9.0
 python_decouple===3.8
+psycopg2-binary>=2.9,<3
