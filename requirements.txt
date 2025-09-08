@@ -1,9 +1,10 @@
+# Core Django & Deployment
 Django>=5.0,<6.0
 gunicorn
 whitenoise
 python-dotenv
 
-# agar tum use karti ho to ye bhi rakho:
+# Data & utilities (if you use them)
 pandas
 numpy
 reportlab
@@ -12,11 +13,12 @@ pillow
 tkcalendar
 django-widget-tweaks
 num2words
+
+# Fixed versions for stability
 whitenoise===6.9.0
 python_decouple===3.8
-psycopg2-binary>=2.9,<3
-
 dj_database_url===3.0.1
 typing_extensions===4.15.0
-psycopg_binary===3.2.9
-psycopg===3.2.9
+
+# PostgreSQL library (psycopg3, SSL ready)
+psycopg[binary]===3.2.9

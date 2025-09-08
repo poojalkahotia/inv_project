@@ -53,11 +53,10 @@ WSGI_APPLICATION = "inv_project.wsgi.application"
 
 # Database (SQLite for simplicity)
 DATABASES = {
-     "default": dj_database_url.config(
-        default=os.getenv(
-            "DATABASE_URL",
-            "postgres://postgres:keshav1604@localhost:5432/inv_project"
-        )
+      "default": dj_database_url.config(
+        default=os.environ.get("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True
     )
 }
 
