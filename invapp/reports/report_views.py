@@ -8,7 +8,9 @@ from decimal import Decimal
 from django.http import HttpResponse
 from invapp.utils.pdf_utils import PartyBalancePDF,ItemBalancePDF,PartyStatementPDF,PurchaseReportPDF,SaleReportPDF,ReceiptReportPDF,PaymentReportPDF
 from invapp.reports.pdf_reports import SaleReportPDF
-
+from io import BytesIO
+from django.core.mail import EmailMessage
+from django.conf import settings
 
 def all_party_balance(request):
     party_objs = HeadParty.objects.all().order_by("partyname")
@@ -218,7 +220,6 @@ def party_st_pdf(request, partyname):
     # Opening Balance
     opening_debit = selected_party.openingdebit or 0
     opening_credit = selected_party.openingcredit or 0
-
     combined_data.append({
         'date': None,
         'type': 'Opening Balance',
@@ -282,13 +283,44 @@ def party_st_pdf(request, partyname):
     # Total Balance
     total_balance = sum(entry['debit'] - entry['credit'] for entry in combined_data)
 
-    # Generate PDF
+    # ✅ Generate PDF in memory
     pdf = PartyStatementPDF()
     pdf.add_page()
     pdf.render_statement(selected_party.partyname, combined_data, total_balance)
-    pdf_output = bytes(pdf.output(dest="S"))
 
-    return HttpResponse(pdf_output, content_type="application/pdf")
+    pdf_buffer = BytesIO()
+    pdf.output(pdf_buffer)
+    pdf_buffer.seek(0)
+
+    # ✅ Send Email if email exists
+    if selected_party.email:
+        subject = f"Statement for {selected_party.partyname}"
+        body = (
+            f"Dear {selected_party.partyname},\n\n"
+            f"Please find attached your latest statement.\n\n"
+            f"Total Balance: Rs.{total_balance:.2f}\n\n"
+            f"Thank you."
+        )
+        email = EmailMessage(
+            subject=subject,
+            body=body,
+            to=[selected_party.email],
+        )
+        email.attach(
+            f"Statement_{selected_party.partyname}.pdf",
+            pdf_buffer.getvalue(),
+            "application/pdf"
+        )
+        email.send(fail_silently=False)
+
+    # ✅ Return PDF in browser
+    pdf_buffer.seek(0)
+    return HttpResponse(
+        pdf_buffer,
+        content_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=Statement_{selected_party.partyname}.pdf"}
+    )
+
 
 
 
@@ -439,28 +471,6 @@ def purmaster_report(request):
     }
     return render(request, 'reports/purchase_report.html', context)
 
-def purchase_report_pdf(request):
-    today = datetime.today()
-    from_date = request.GET.get('from_date', today.replace(day=1).strftime('%Y-%m-%d'))
-    to_date = request.GET.get('to_date', today.strftime('%Y-%m-%d'))
-    partyname = request.GET.get('partyname', '')
-
-    filters = {'invdate__range': [from_date, to_date]}
-    if partyname:
-        filters['partyname'] = partyname
-
-    purchases = PurMaster.objects.filter(**filters).order_by('-invdate')
-    total_amount = sum(p.amount for p in purchases)
-
-    # PDF
-    pdf = PurchaseReportPDF()
-    pdf.add_page()
-    pdf.render_purchase_report(purchases, total_amount, from_date, to_date, partyname)
-
-    # ✅ FIXED
-    pdf_output = pdf.output(dest="S").encode("latin-1")
-    return HttpResponse(pdf_output, content_type="application/pdf")
-
 
 def salemaster_report(request):
     # Default date range (current month)
@@ -500,17 +510,47 @@ def sale_pdf(request, invno):
     if not details.exists():
         return HttpResponse("⚠️ No sale details found", status=404)
 
-    # ✅ Company info load karo
     company = HeadCompanyinfo.objects.first()
 
     pdf = SaleReportPDF(sale, details, company)
     pdf.add_page()
     pdf.sales_table()
 
-    pdf_data = pdf.output(dest="S").encode("latin-1")
-    return HttpResponse(pdf_data, content_type="application/pdf")
+    # Generate PDF in memory
+    pdf_buffer = BytesIO()
+    pdf.output(pdf_buffer)
+    pdf_buffer.seek(0)
 
+    # -----------------------------
+    # ✅ Email sending
+    # -----------------------------
+    recipient = sale.email or getattr(getattr(sale, "party", None), "email", None)
+    if recipient:
+        subject = f"Invoice #{sale.invno}"
+        party_name = getattr(getattr(sale, "party", sale), "name", "Customer")
+        body = (
+            f"Dear {party_name},\n\n"
+            f"Please find attached your invoice #{sale.invno}.\n\n"
+            f"Thank you."
+        )
+        email = EmailMessage(
+            subject=subject,
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,   # ✅ MUST be Gmail address
+            to=[recipient],
+        )
+        email.attach(f"Invoice_{sale.invno}.pdf", pdf_buffer.getvalue(), "application/pdf")
+        email.send(fail_silently=False)
 
+    # Return PDF in browser
+    pdf_buffer.seek(0)
+    return HttpResponse(
+        pdf_buffer,
+        content_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=invoice_{sale.invno}.pdf"}
+    )
+
+    
 def recmaster_report(request):
     # Default date range (current month)
     today = datetime.today()
@@ -554,8 +594,8 @@ def receipt_report_pdf(request):
     pdf.add_page()
     pdf.receipts_table(receipts)
 
-    # ✅ Fix: use encode("latin-1") instead of bytes()
-    pdf_data = pdf.output(dest="S").encode("latin-1")
+    # ✅ Fix: FPDF v3 ke liye
+    pdf_data = bytes(pdf.output(dest="S"))
     return HttpResponse(pdf_data, content_type="application/pdf")
 
 
@@ -602,8 +642,7 @@ def payment_report_pdf(request):
     pdf.add_page()
     pdf.payments_table(payments)
 
-    pdf_data = pdf.output(dest="S").encode("latin-1")
+    pdf_data = bytes(pdf.output(dest="S"))
     return HttpResponse(pdf_data, content_type="application/pdf")
-
 
 

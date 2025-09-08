@@ -100,7 +100,7 @@ class PurDetails(models.Model):
     itemrate = models.DecimalField(max_digits=10, decimal_places=2)
     itemamt = models.DecimalField(max_digits=10, decimal_places=2)
     def __str__(self):
-        return f"{self.itemname} - {self.qty}"
+        return f"{self.itemname} - {self.itemqty}"
 
 class SaleMaster(models.Model):
     invno = models.AutoField(primary_key=True)  # Unique invoice number

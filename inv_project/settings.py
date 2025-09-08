@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import dj_database_url   # ← ye line add karein
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,14 +53,12 @@ WSGI_APPLICATION = "inv_project.wsgi.application"
 
 # Database (SQLite for simplicity)
 DATABASES = {
-    "default": {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'inv_project',     # Step 1 में बनाया database
-        'USER': 'postgres',        # pgAdmin वाला username
-        'PASSWORD': 'keshav1604',   # pgAdmin वाला password
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+     "default": dj_database_url.config(
+        default=os.getenv(
+            "DATABASE_URL",
+            "postgres://postgres:keshav1604@localhost:5432/inv_project"
+        )
+    )
 }
 
 # Password validation
@@ -94,3 +93,16 @@ CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com"]
 LOGIN_URL = '/login/' 
 LOGIN_REDIRECT_URL = '/dashboard/'   # login ke baad yeh page khulega
 LOGOUT_REDIRECT_URL = '/login/'      # logout ke baad login page pe redirect
+
+# -------------------------------------------------
+# 📧 Email settings
+# -------------------------------------------------
+# Use SMTP for actual sending
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"  # console backend se change
+
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "pooja11lakhotia@gmail.com")          # Gmail
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "bdlb doho pzse oleu")          # Gmail App Password
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)

@@ -46,6 +46,7 @@ urlpatterns = [
     path('purchase/delete/<int:invno>/', purchase_views.delete_purchase, name='delete_purchase'),
     path('purchasedata/', purchase_views.purchase_data_view, name='purchasedata'),
     
+
     path('num-to-words/', purchase_views.num_to_words, name='num_to_words'),
     
     path('sale/', sale_views.sale_form, name='sale_form_new'),
@@ -88,7 +89,7 @@ urlpatterns = [
     path("allpartybalance/pdf/", report_views.all_party_balance_pdf, name="all_party_balance_pdf"),
     path("all-item-balance/pdf/", report_views.all_item_balance_pdf, name="all_item_balance_pdf"),
     path("partyst/pdf/<str:partyname>/", report_views.party_st_pdf, name="party_st_pdf"),
-    path("purchase_report/pdf/", report_views.purchase_report_pdf, name="purchase_report_pdf"),
+    
     path("sale/<str:invno>/pdf/", report_views.sale_pdf, name="sale_pdf"),
     path('receipt_report/pdf/', report_views.receipt_report_pdf, name='receipt_report_pdf'),
     path('payment_report/pdf/', report_views.payment_report_pdf, name='payment_report_pdf'),

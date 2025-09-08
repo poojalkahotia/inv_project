@@ -13,11 +13,14 @@ class SaleReportPDF(FPDF):
         company = HeadCompanyinfo.objects.first()
 
         # Company Info (Top Center)
+        # Company Info (Top Center)
         if company:
             self.set_font("Arial", "B", 14)
             self.cell(0, 8, company.companyname, ln=1, align="C")
+
             self.set_font("Arial", "", 10)
-            self.cell(0, 6, f"{company.add1}, {company.city}, {company.state}", ln=1, align="C")
+            self.cell(0, 6, company.add1, ln=1, align="C")  # Sirf address line
+            self.cell(0, 6, f"{company.city}, {company.state}", ln=1, align="C")  # City + State next line
             self.cell(0, 6, f"Mobile: {company.mobile}", ln=1, align="C")
             self.ln(5)
 
@@ -45,6 +48,9 @@ class SaleReportPDF(FPDF):
 
     # ---------- TABLE ----------
     def sales_table(self):
+         # Ensure table starts thoda neeche (after party info + invoice box)
+        if self.get_y() < 80:   # check kar rahe ki abhi cursor upar hai
+            self.set_y(80)
         self.set_font("Arial", "B", 10)
         self.cell(70, 8, "Item", 1, 0, "C")
         self.cell(30, 8, "Qty", 1, 0, "C")

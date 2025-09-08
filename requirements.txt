@@ -15,3 +15,8 @@ num2words
 whitenoise===6.9.0
 python_decouple===3.8
 psycopg2-binary>=2.9,<3
+
+dj_database_url===3.0.1
+typing_extensions===4.15.0
+psycopg_binary===3.2.9
+psycopg===3.2.9
