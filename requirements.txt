@@ -22,3 +22,5 @@ typing_extensions===4.15.0
 
 # PostgreSQL library (psycopg3, SSL ready)
 psycopg[binary]===3.2.9
+
+python_dotenv===1.1.1

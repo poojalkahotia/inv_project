@@ -1,8 +1,13 @@
 import os
 from pathlib import Path
 import dj_database_url   # ← ye line add karein
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Explicit path to your .env file
+load_dotenv(BASE_DIR / "inv_project" / ".env")
+
 
 # Security
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
@@ -56,7 +61,7 @@ DATABASES = {
       "default": dj_database_url.config(
         default=os.environ.get("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=False
     )
 }
 
